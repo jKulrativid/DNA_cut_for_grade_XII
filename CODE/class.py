@@ -16,7 +16,7 @@ class DNA:
         self.name = name
 
     def show_length(self):
-        print(len(self.strand))
+        print('Length of {!r} = {}'.format(self.name, len(self.strand)))
 
     def count_each(self):
         a, t, c, g = 0, 0, 0, 0
@@ -33,13 +33,32 @@ class DNA:
             else:
                 non_base += 1
         return a, t, c, g, non_base
+    
+    def cut(self, enzyme):
+        pass
 
 
 class Enzyme(DNA):
     def __init__(self, strand, direction, delimiter):
         super().__init__(strand, direction)
         self.delimiter = delimiter
+        self.strand, self.cut_position = self.enzyme_setting()
+        # ตัวสุดท้ายของสายที่โดนตัดคือ ตัวที่ self.cut_position (เริ่มนับตัวแรกจาก1)
 
+    def enzyme_setting(self):
+        pure_dna = ''
+        cnt = 0  # cnt = index ของ
+        pos = None
+        for base in self.strand:
+            if base not in ('A', 'T', 'C', 'G'):
+                pos = cnt
+            else:
+                pure_dna += base
+                cnt += 1
+        if pos is None:
+            return pure_dna, 'Not found'
+        else:
+            return pure_dna, pos
 
 '''
     def show_base(self):
@@ -71,8 +90,19 @@ class Enzyme(DNA):
 
 # tester
 if __name__ == '__main__':
+    # DNA
     test_dna = DNA('gattgctatgcattagc', '3to5')
     test_dna.rename('Test DNA')
     test_dna.show_all()
     print(test_dna.a)
     test_dna.show_length()
+    print('='*60)
+
+    # Enzyme
+    test_enzyme = Enzyme('cctag|g', '3to5', '|')
+    test_enzyme.rename('Test Enzyme')
+    test_enzyme.show_all()
+    print(test_enzyme.a)
+    test_enzyme.show_length()
+    print('Cut Positon = {}'.format(test_enzyme.cut_position))
+
