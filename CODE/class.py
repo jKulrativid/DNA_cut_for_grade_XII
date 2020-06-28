@@ -4,6 +4,7 @@ class DNA:
         self.strand = strand.upper()
         self.start = direction[0] + '\''
         self.stop = direction[3] + '\''
+        self.a, self.t, self.c, self.g, self.non_base = self.count_each()
 
     def show_all(self):
         print(self.name)
@@ -16,6 +17,30 @@ class DNA:
 
     def show_length(self):
         print(len(self.strand))
+
+    def count_each(self):
+        a, t, c, g = 0, 0, 0, 0
+        non_base = 0
+        for base in self.strand:
+            if base == 'A':
+                a += 1
+            elif base == 'T':
+                t += 1
+            elif base == 'C':
+                c += 1
+            elif base == 'G':
+                g += 1
+            else:
+                non_base += 1
+        return a, t, c, g, non_base
+
+
+class Enzyme(DNA):
+    def __init__(self, strand, direction, delimiter):
+        super().__init__(strand, direction)
+        self.delimiter = delimiter
+
+
 '''
     def show_base(self):
         self.count_base()
@@ -49,4 +74,3 @@ if __name__ == '__main__':
     test_dna = DNA('gattgctatgcattagc', '3to5')
     test_dna.rename('Test DNA')
     test_dna.show_all()
-
