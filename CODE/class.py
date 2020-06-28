@@ -74,3 +74,5 @@ if __name__ == '__main__':
     test_dna = DNA('gattgctatgcattagc', '3to5')
     test_dna.rename('Test DNA')
     test_dna.show_all()
+    print(test_dna.a)
+    test_dna.show_length()
