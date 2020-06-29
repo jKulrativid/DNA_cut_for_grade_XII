@@ -16,13 +16,7 @@ class DNA:
         self.name = name
 
     def show_length(self):
-
-        print(len(self.strand))
-
-    def cut(self, enzyme):
-        for base in range(len(self.strand)-len(enzyme.strand)):
-            for i in ('0', '1'):
-                pass
+        print('Length of {!r} = {}'.format(self.name, len(self.strand)))
 
     def count_each(self):
         a, t, c, g = 0, 0, 0, 0
@@ -40,13 +34,11 @@ class DNA:
                 non_base += 1
         return a, t, c, g, non_base
 
-    def cut(self, enzyme):
-        pass
-
 
 class Enzyme(DNA):
     def __init__(self, strand, direction, delimiter):
         super().__init__(strand, direction)
+        self.name = 'Unnamed Enzyme'
         self.delimiter = delimiter
         self.strand, self.cut_position = self.enzyme_setting()
         # ตัวสุดท้ายของสายที่โดนตัดคือ ตัวที่ self.cut_position (เริ่มนับตัวแรกจาก1)
@@ -65,6 +57,33 @@ class Enzyme(DNA):
             return pure_dna, 'Not found'
         else:
             return pure_dna, pos
+
+
+class EnzymeStack:
+    def __init__(self):
+        self.stack = list()
+
+    def add(self, enzyme):
+        self.stack.append(enzyme)
+
+
+class CutTest:
+    def __init__(self):
+        self.history = dict()
+        for enzyme in enzyme_stack.stack:
+            self.history[enzyme.name] = 0
+
+    def cut(self, enzyme):
+        cut_from = 0
+        cut_end = 0
+        for i in range(len(self.strand) - len(enzyme.strand) + 1):
+            match_enzyme = True
+            for j in range(len(enzyme.strand)):
+                if self.strand[i + j] != enzyme.strand[i + j]:
+                    match_enzyme = False
+            if match_enzyme:
+                pass
+
 
 '''
     def show_base(self):
@@ -104,11 +123,23 @@ if __name__ == '__main__':
     test_dna.show_length()
     print('='*60)
 
-    # Enzyme
-    test_enzyme = Enzyme('cctag|g', '3to5', '|')
-    test_enzyme.rename('Test Enzyme')
-    test_enzyme.show_all()
-    print(test_enzyme.a)
-    test_enzyme.show_length()
-    print('Cut Positon = {}'.format(test_enzyme.cut_position))
+    # Enzyme <BamHI>
+    test_enzyme1 = Enzyme('cctag|g', '3to5', '|')
+    test_enzyme1.rename('BamHI')
+    test_enzyme1.show_all()
+    print(test_enzyme1.a)
+    test_enzyme1.show_length()
+    print('Cut Positon = {}'.format(test_enzyme1.cut_position))
 
+    # Enzyme <HaeIII>
+    test_enzyme2 = Enzyme('cc|gg', '3to5', '|')
+    test_enzyme2.rename('HaeIII')
+    test_enzyme2.show_all()
+    print(test_enzyme2.a)
+    test_enzyme2.show_length()
+    print('Cut Positon = {}'.format(test_enzyme2.cut_position))
+
+    # EnzymeStack
+    enzyme_stack = EnzymeStack()
+    enzyme_stack.add(test_enzyme1)
+    enzyme_stack.add(test_enzyme2)
