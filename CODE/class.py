@@ -59,30 +59,44 @@ class Enzyme(DNA):
             return pure_dna, pos
 
 
-class EnzymeStack:
+class PetriDish:
     def __init__(self):
         self.stack = list()
 
-    def add(self, enzyme):
-        self.stack.append(enzyme)
+    def add(self, dna):
+        self.stack.append(dna)
+
+
+class DNAStack(PetriDish):
+    def __init__(self):
+        super().__init__()
+
+
+class EnzymeStack(PetriDish):
+    def __init__(self):
+        super().__init__()
 
 
 class CutTest:
-    def __init__(self):
+    def __init__(self, enzyme_stack):
         self.history = dict()
         for enzyme in enzyme_stack.stack:
             self.history[enzyme.name] = 0
 
-    def cut(self, enzyme):
+    def cut(self, dna, enzyme, cutted_stack):
         cut_from = 0
-        cut_end = 0
-        for i in range(len(self.strand) - len(enzyme.strand) + 1):
+        for i in range(len(dna.strand) - len(enzyme.strand) + 1):
             match_enzyme = True
             for j in range(len(enzyme.strand)):
-                if self.strand[i + j] != enzyme.strand[i + j]:
+                if dna.strand[i + j] != enzyme.strand[j]:
                     match_enzyme = False
+                    break
             if match_enzyme:
-                pass
+                cut_end = i
+                cutted_stack.stack.append(dna.strand[cut_from: cut_end + enzyme.cut_position])
+                cut_from = cut_end + enzyme.cut_position
+        cut_end = len(dna.strand) + 1
+        cutted_stack.stack.append(dna.strand[cut_from: cut_end + enzyme.cut_position])
 
 
 '''
@@ -116,7 +130,7 @@ class CutTest:
 # tester
 if __name__ == '__main__':
     # DNA
-    test_dna = DNA('gattgctatgcattagc', '3to5')
+    test_dna = DNA('gaccggatccgggc', '3to5')
     test_dna.rename('Test DNA')
     test_dna.show_all()
     print(test_dna.a)
@@ -143,3 +157,13 @@ if __name__ == '__main__':
     enzyme_stack = EnzymeStack()
     enzyme_stack.add(test_enzyme1)
     enzyme_stack.add(test_enzyme2)
+
+    # DNA_stack
+    dna_keeper = DNAStack()
+
+    # cutter
+    cutter = CutTest(enzyme_stack)
+    cutter.cut(test_dna, test_enzyme2, dna_keeper)
+
+    # output
+    print(dna_keeper.stack)
