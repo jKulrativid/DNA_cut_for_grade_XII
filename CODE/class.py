@@ -66,6 +66,10 @@ class PetriDish:
     def add(self, dna):
         self.stack.append(dna)
 
+    def show(self):
+        for index, item in enumerate(self.stack):
+            print(f'{index+1}. {item.name}')
+
 
 class DNAStack(PetriDish):
     def __init__(self):
@@ -83,7 +87,7 @@ class CutTest:
         for enzyme in enzyme_stack.stack:
             self.history[enzyme.name] = 0
 
-    def cut(self, dna, enzyme, cutted_stack):
+    def cut_specific(self, dna, enzyme, cutted_stack):
         cut_from = 0
         for i in range(len(dna.strand) - len(enzyme.strand) + 1):
             match_enzyme = True
@@ -97,6 +101,26 @@ class CutTest:
                 cut_from = cut_end + enzyme.cut_position
         cut_end = len(dna.strand) + 1
         cutted_stack.stack.append(dna.strand[cut_from: cut_end + enzyme.cut_position])
+
+    def cut_all(self, dna, enzyme_stack, cutted_stack):
+        cut_from = 0
+        for i in range(len(dna.strand)):
+            for n in range(len(enzyme_stack.stack)):
+                match_enzyme = True
+                for j in range(len(enzyme_stack.stack[n].strand)):
+                    if i + j < len(test_dna.strand):
+                        if dna.strand[i + j] != enzyme_stack.stack[n].strand[j]:
+                            match_enzyme = False
+                            break
+                    else:
+                        match_enzyme = False
+                        break
+                if match_enzyme:
+                    cut_end = i
+                    cutted_stack.stack.append(dna.strand[cut_from: cut_end + enzyme_stack.stack[n].cut_position])
+                    cut_from = cut_end + enzyme_stack.stack[n].cut_position
+        if dna.strand[cut_from: len(dna.strand)+1] != '':
+            cutted_stack.stack.append(dna.strand[cut_from: len(dna.strand)+1])
 
 
 '''
@@ -130,7 +154,7 @@ class CutTest:
 # tester
 if __name__ == '__main__':
     # DNA
-    test_dna = DNA('gaccggatccgggc', '3to5')
+    test_dna = DNA('gaccggcctaggatccgggc', '3to5')
     test_dna.rename('Test DNA')
     test_dna.show_all()
     print(test_dna.a)
@@ -157,13 +181,20 @@ if __name__ == '__main__':
     enzyme_stack = EnzymeStack()
     enzyme_stack.add(test_enzyme1)
     enzyme_stack.add(test_enzyme2)
+    enzyme_stack.show()
 
     # DNA_stack
     dna_keeper = DNAStack()
 
     # cutter
     cutter = CutTest(enzyme_stack)
-    cutter.cut(test_dna, test_enzyme2, dna_keeper)
+
+    # cut specific
+    cutter.cut_specific(test_dna, test_enzyme1, dna_keeper)
+    cutter.cut_specific(test_dna, test_enzyme2, dna_keeper)
+
+    # cut all
+    cutter.cut_all(test_dna, enzyme_stack, dna_keeper)
 
     # output
     print(dna_keeper.stack)
