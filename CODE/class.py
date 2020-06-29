@@ -16,6 +16,17 @@ class DNA:
 
     def show_length(self):
         print(len(self.strand))
+
+    def cut(self, enzyme):
+        for base in range(len(self.strand)-len(enzyme.strand)):
+            for
+
+
+class Enzyme(DNA):
+    def __init__(self):
+        super().__init__(strand, direction)
+            self.strand, self.cut_position = self.cut_position
+
 '''
     def show_base(self):
         self.count_base()
