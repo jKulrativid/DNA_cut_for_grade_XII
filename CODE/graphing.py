@@ -25,7 +25,7 @@ def horizon_bar_plt(dna_stack):
 
     # Example data
     people = ('Tom', 'Dick', 'Harry', 'Slim', 'Jim')
-    y_pos = np.arange(len(people))
+    y_pos = np.arange(len(people))  # np.arange(x) = [0, 1, 2 ... x-1]
     performance = 3 + 10 * np.random.rand(len(people))
     error = np.random.rand(len(people))
 
@@ -44,6 +44,10 @@ def linear_plt(dna_stack):
 
 
 if __name__ == '__main__':
+    # Formatting data to plotter
+    '''
     a = ['GACCGGCCTAG', 'GATCCGGGC', 'GACC', 'GGCCTAGGATCC', 'GGGC', 'GACC', 'GGCCTAG', 'GATCC', 'GGGC']
     times = [1, 3, 5, 2, 4]
     circle_plt(a)
+    '''
+    horizon_bar_plt(None)
